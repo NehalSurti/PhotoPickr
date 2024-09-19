@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { Button } from "../ui/button";
 
 export default function HeroSection() {
   return (
@@ -16,6 +17,7 @@ export default function HeroSection() {
             Clash
           </h1>
           <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-center">Discover the better choice, together</p>
+          <Button className="mt-2">Start Free</Button>
         </div>
       </div>
     </div>
