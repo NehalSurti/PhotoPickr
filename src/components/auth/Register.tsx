@@ -4,11 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "../common/SubmitBtn";
 import { useFormState } from "react-dom";
+import { registerAction } from "@/actions/authActions";
 
 export default function Register() {
   
   return (
-    <form>
+    <form action={registerAction}>
       <div className="mt-4">
         <Label htmlFor="name">Name</Label>
         <Input id="name" placeholder="Type your name" name="name" />
