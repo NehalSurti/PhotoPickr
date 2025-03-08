@@ -1,10 +1,12 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFormState } from "react-dom";
 import Link from "next/link";
 import { SubmitButton } from "../common/SubmitBtn";
+import { toast } from "sonner";
+import { loginAction } from "@/actions/authActions";
 
 export default function Login() {
   const initialState = {
@@ -14,12 +16,28 @@ export default function Login() {
     data: {},
   };
 
+  const [state, formAction] = useFormState(loginAction, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.status === 422) {
+      toast.error(state.message);
+    } else if (state.status === 404) {
+      toast.error(state.message);
+    } else if (state.status === 500) {
+      toast.error(state.message);
+    } else if (state.status === 200) {
+      toast.success(state.message);
+      formRef.current?.reset();
+    }
+  }, [state]);
+
   return (
-    <form>
+    <form ref={formRef} action={formAction}>
       <div className="mt-4">
         <Label htmlFor="email">Email</Label>
         <Input id="email" placeholder="Type your email" name="email" />
-        <span className="text-red-400">{}</span>
+        <span className="text-red-400">{state.errors?.email}</span>
       </div>
       <div className="mt-4">
         <Label htmlFor="password">Password</Label>
@@ -30,7 +48,7 @@ export default function Login() {
           name="password"
         />
 
-        <span className="text-red-400">{}</span>
+        <span className="text-red-400">{state.errors?.password}</span>
       </div>
       <div className="mt-4">
         <SubmitButton />
