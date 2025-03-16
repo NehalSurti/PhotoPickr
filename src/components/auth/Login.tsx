@@ -7,6 +7,7 @@ import Link from "next/link";
 import { SubmitButton } from "../common/SubmitBtn";
 import { toast } from "sonner";
 import { loginAction } from "@/actions/authActions";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
   const initialState = {
@@ -28,6 +29,12 @@ export default function Login() {
       toast.error(state.message);
     } else if (state.status === 200) {
       toast.success(state.message);
+      signIn("credentials", {
+        email: state.data?.email,
+        password: state.data?.password,
+        redirect: true,
+        callbackUrl: "/dashboard",
+      });
       formRef.current?.reset();
     }
   }, [state]);
