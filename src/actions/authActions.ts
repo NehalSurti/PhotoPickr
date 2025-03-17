@@ -1,6 +1,6 @@
 "use server"
 
-import { CHECK_CREDENTIALS_URL, REGISTER_URL } from "@/lib/apiEndPoints";
+import { CHECK_CREDENTIALS_URL, FORGOT_PASSWORD_URL, REGISTER_URL } from "@/lib/apiEndPoints";
 import axios, { AxiosError } from "axios";
 
 export async function registerAction(prevState: any, formdata: FormData) {
@@ -66,6 +66,34 @@ export async function loginAction(prevState: any, formData: FormData) {
             message: "Something went wrong.please try again!",
             errors: {},
             data: {},
+        };
+    }
+}
+
+export async function forgotPasswordAction(prevState: any, formData: FormData) {
+    try {
+        await axios.post(FORGOT_PASSWORD_URL, {
+            email: formData.get("email"),
+        });
+        return {
+            status: 200,
+            message: "Email sent successfully!! Please check your email.",
+            errors: {},
+        };
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            if (error.response?.status === 422) {
+                return {
+                    status: 422,
+                    message: error.response?.data?.message,
+                    errors: error.response?.data?.errors,
+                };
+            }
+        }
+        return {
+            status: 500,
+            message: "Something went wrong.please try again!",
+            errors: {},
         };
     }
 }
