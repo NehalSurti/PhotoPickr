@@ -50,6 +50,7 @@ export const authOptions: AuthOptions = {
         },
         async session({ session, user, token }: { session: CustomSession, user: CustomUser, token: JWT }) {
             session.user = token.user as CustomUser
+            console.log("Session : ", session);
             return session
         }
     },

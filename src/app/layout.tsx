@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import ClientSessionProvider from "@/providers/ClientSessionProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -21,7 +22,7 @@ export default function RootLayout({
       <body
         className={cn("min-h-screen antialiased bg-slate-50", inter.variable)}
       >
-        {children}
+        <ClientSessionProvider>{children}</ClientSessionProvider>
         <Toaster richColors position="top-right" />
       </body>
     </html>
