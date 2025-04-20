@@ -1,19 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+
 import {
   Popover,
   PopoverContent,
@@ -22,15 +22,26 @@ import {
 import axios, { AxiosError } from "axios";
 import { PHOTOPICKR_URL } from "@/lib/apiEndPoints";
 import { toast } from "sonner";
-import { CustomUser } from "@/app/api/auth/[...nextauth]/options";
 import { clearCache } from "@/actions/commonActions";
 
-export default function AddPhotoPickr({ user }: { user: CustomUser }) {
-  const [open, setOpen] = useState(false);
+export default function EditPhotoPickr({
+  token,
+  item,
+  open,
+  setOpen,
+}: {
+  token: string;
+  item: PhotoPickrType;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) {
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [date, setDate] = React.useState<Date | null>();
-  const [photoPickrData, setPhotoPickrData] = useState<PhotoPickrFormType>({});
+  const [date, setDate] = React.useState<Date | null>(new Date(item.expire_at));
+  const [photoPickrData, setPhotoPickrData] = useState<PhotoPickrFormType>({
+    title: item.title,
+    description: item?.description ?? "",
+  });
   const [errors, setErrors] = useState<PhotoPickrFormErrorType>();
   const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -49,23 +60,24 @@ export default function AddPhotoPickr({ user }: { user: CustomUser }) {
       formData.append("expire_at", date?.toISOString() ?? "");
       if (image) formData.append("image", image);
 
-      const { data } = await axios.post(PHOTOPICKR_URL, formData, {
-        headers: {
-          Authorization: user.token,
-        },
-      });
+      const { data } = await axios.put(
+        `${PHOTOPICKR_URL}/${item.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
       setLoading(false);
       if (data?.message) {
         setPhotoPickrData({});
         setDate(null);
-        setImage(null);
-        setErrors({});
         clearCache("dashboard");
         toast.success(data?.message);
         setOpen(false);
       }
     } catch (error) {
-      console.log("The error is ", error);
       setLoading(false);
       if (error instanceof AxiosError) {
         if (error.response?.status === 422) {
@@ -77,23 +89,14 @@ export default function AddPhotoPickr({ user }: { user: CustomUser }) {
     }
   };
 
-  useEffect(() => {
-    if (open === false) {
-      setErrors({});
-    }
-  }, [open]);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Create PhotoPickr</Button>
-      </DialogTrigger>
       <DialogContent
         onInteractOutside={(e) => e.preventDefault()}
         className="xl:max-h-[95vh] overflow-y-auto"
       >
         <DialogHeader>
-          <DialogTitle>Create PhotoPickr</DialogTitle>
+          <DialogTitle>Edit PhotoPickr</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
@@ -149,7 +152,7 @@ export default function AddPhotoPickr({ user }: { user: CustomUser }) {
                 <Calendar
                   mode="single"
                   selected={date ?? new Date()}
-                  onSelect={setDate}
+                  onSelect={(date) => setDate(date!)}
                   initialFocus
                 />
               </PopoverContent>

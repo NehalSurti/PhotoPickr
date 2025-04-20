@@ -11,3 +11,9 @@ export const CHECK_CREDENTIALS_URL = `${BASE_URL}/auth/check/login`;
 export const FORGOT_PASSWORD_URL = `${BASE_URL}/auth/forget-password`;
 
 export const RESET_PASSWORD_URL = `${BASE_URL}/auth/reset-password`;
+
+
+//  PhotoPickr URL
+export const PHOTOPICKR_URL = `${BASE_URL}/photoPickr`;
+
+export const PHOTOPICKR_ITEMS_URL = `${BASE_URL}/photoPickr/items`;

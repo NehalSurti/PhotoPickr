@@ -28,8 +28,8 @@ export default function LogoutModal({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action expire your current session and you have to loging again
-            to access dashboard
+            This action will expire your current session and you have to loging
+            again to access dashboard
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
