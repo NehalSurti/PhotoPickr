@@ -15,7 +15,7 @@ export default async function dashboard() {
     session?.user?.token!
   );
   return (
-    <div className="container">
+    <div className="container m-auto">
       <Navbar />
       <div className="text-end mt-4">
         <AddPhotoPickr user={session?.user!} />
